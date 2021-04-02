@@ -1,7 +1,6 @@
 package com.java_tutorials.dip_kata_java;
 
 import com.java_tutorials.dip_kata_java.user_analytics.DocumentId;
-import com.java_tutorials.dip_kata_java.user_analytics.UserAnalytics;
 import com.java_tutorials.dip_kata_java.user_analytics.UserEvent;
 import com.java_tutorials.dip_kata_java.user_analytics.documents.Document;
 import com.java_tutorials.dip_kata_java.user_analytics.documents.DocumentsStore;
@@ -13,13 +12,10 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.Optional;
-import java.util.stream.Stream;
+import java.util.*;
 
 import static com.java_tutorials.dip_kata_java.utils.DateBuilder.date;
+import static java.util.Arrays.asList;
 import static java.util.TimeZone.getTimeZone;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -28,14 +24,14 @@ import static org.mockito.Mockito.when;
 public class DocumentManagementPortalHomeTest {
 
     private DocumentManagementPortalHome portalHome;
-    private UserAnalytics userAnalytics;
+    private UserAnalyticsImplStub userAnalytics;
     private DocumentsStore documentsStore;
 
     @Before
     public void setup() {
-        userAnalytics = mock(UserAnalytics.class);
         documentsStore = mock(DocumentsStore.class);
-        portalHome = new DocumentManagementPortalHome(userAnalytics, documentsStore);
+        userAnalytics = new UserAnalyticsImplStub(documentsStore);
+        portalHome = new DocumentManagementPortalHome(userAnalytics);
     }
 
     private Date addHours(Date date, int hours) {
@@ -75,8 +71,9 @@ public class DocumentManagementPortalHomeTest {
         DocumentEditedUserEvent document2EditedByMary = new DocumentEditedUserEvent(mary, addHours(startDate, 2), document2.getDocumentId());
         DocumentDownloadedUserEvent document2DownloadedByJohn = new DocumentDownloadedUserEvent(john, addHours(startDate, 3), document2.getDocumentId());
 
-        Stream<UserEvent> userEvents = Stream.of(johnLoggedIn, document1EditedByJohn, document2EditedByMary, document2DownloadedByJohn, johnLoggedIn);
-        when(userAnalytics.listUserEventsByDateDesc()).thenReturn(userEvents.sorted(Comparator.comparing(UserEvent::getDate).reversed()));
+        Set<UserEvent> userEvents = new HashSet<>(asList(johnLoggedIn, document1EditedByJohn, document2EditedByMary, document2DownloadedByJohn, johnLoggedIn));
+        userAnalytics.setUserEventsSortedByDateDesc(userEvents);
+
         when(documentsStore.fetchDocument(document1.getDocumentId())).thenReturn(Optional.of(document1));
         when(documentsStore.fetchDocument(document2.getDocumentId())).thenReturn(Optional.of(document2));
 

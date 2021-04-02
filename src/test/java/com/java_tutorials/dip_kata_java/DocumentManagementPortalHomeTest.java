@@ -1,5 +1,6 @@
 package com.java_tutorials.dip_kata_java;
 
+import com.java_tutorials.dip_kata_java.impl.RecentDocumentsFromUserAnalytics;
 import com.java_tutorials.dip_kata_java.user_analytics.DocumentId;
 import com.java_tutorials.dip_kata_java.user_analytics.UserAnalytics;
 import com.java_tutorials.dip_kata_java.user_analytics.UserEvent;
@@ -30,12 +31,14 @@ public class DocumentManagementPortalHomeTest {
     private DocumentManagementPortalHome portalHome;
     private UserAnalytics userAnalytics;
     private DocumentsStore documentsStore;
+    private RecentDocumentsFromUserAnalytics recentDocuments;
 
     @Before
     public void setup() {
-        userAnalytics = mock(UserAnalytics.class);
         documentsStore = mock(DocumentsStore.class);
-        portalHome = new DocumentManagementPortalHome(userAnalytics, documentsStore);
+        userAnalytics = mock(UserAnalytics.class);
+        recentDocuments = new RecentDocumentsFromUserAnalytics(userAnalytics, documentsStore);
+        portalHome = new DocumentManagementPortalHome(recentDocuments);
     }
 
     private Date addHours(Date date, int hours) {

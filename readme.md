@@ -1,4 +1,5 @@
 
+
 # Overview
 This repo contains Java code that allows to execute a code kata aimed at learning the Dependency Inversion principle.
 
@@ -21,6 +22,8 @@ So we have:
 * and that uses a `UserAnalytics`
 
 The code in the `main` however violates DIP in the way it "connects" these two classes: you must "decouple" them so that the resulting code is compliant with DIP.
+
+Please, use the (really basic) test in `DocumentManagementPortalHomeTest` to check for correctness.
 
 Two solutions are provided:
 

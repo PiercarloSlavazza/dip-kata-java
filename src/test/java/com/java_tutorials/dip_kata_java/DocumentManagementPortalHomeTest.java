@@ -76,11 +76,11 @@ public class DocumentManagementPortalHomeTest {
         DocumentDownloadedUserEvent document2DownloadedByJohn = new DocumentDownloadedUserEvent(john, addHours(startDate, 3), document2.getDocumentId());
 
         Stream<UserEvent> userEvents = Stream.of(johnLoggedIn, document1EditedByJohn, document2EditedByMary, document2DownloadedByJohn, johnLoggedIn);
-        when(userAnalytics.listUserEventsByDateDesc()).thenReturn(userEvents.sorted(Comparator.comparing(UserEvent::getDate)));
+        when(userAnalytics.listUserEventsByDateDesc()).thenReturn(userEvents.sorted(Comparator.comparing(UserEvent::getDate).reversed()));
         when(documentsStore.fetchDocument(document1.getDocumentId())).thenReturn(Optional.of(document1));
         when(documentsStore.fetchDocument(document2.getDocumentId())).thenReturn(Optional.of(document2));
 
-        String expectedPortletHtml = htmlOfDocumentsPortlet("john", "Lorem Ipsum", "Dolor sit amet").toString();
+        String expectedPortletHtml = htmlOfDocumentsPortlet("john", "Dolor sit amet", "Lorem Ipsum").toString();
 
         try (StringWriter portletHtmlStringWriter = new StringWriter()) {
             portalHome.renderMostRecentDocumentsPortlet(portletHtmlStringWriter, john);
